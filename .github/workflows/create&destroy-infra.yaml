@@ -40,7 +40,7 @@ jobs:
   destroy:
     runs-on: ubuntu-latest
 
-    if: github.event_name == 'workflow_dispatch' # Garante que só roda manualmente
+    if: ${{ github.event_name == 'workflow_dispatch' }} # Garante que só roda manualmente
 
     steps:
       - name: Checkout code
@@ -58,7 +58,7 @@ jobs:
           sudo ./aws/install --update
           mkdir -p ~/.aws
           echo "${{ secrets.AWS_CREDENTIALS }}" > ~/.aws/credentials
-          chmod 600 ~/.aws/credentials
+          chmod 600 ~/..aws/credentials
 
       - name: Terraform Init
         run: terraform init
