@@ -17,7 +17,7 @@ on:
 
 jobs:
   deploy:
-    if: github.event.inputs.action == 'deploy'
+    if: github.event.inputs.action == 'deploy' || github.event.inputs.action == ''
     runs-on: ubuntu-latest
 
     steps:
@@ -67,7 +67,7 @@ jobs:
           sudo ./aws/install --update
           mkdir -p ~/.aws
           echo "${{ secrets.AWS_CREDENTIALS }}" > ~/.aws/credentials
-          chmod 600 ~/..aws/credentials
+          chmod 600 ~/.aws/credentials
       
       - name: Terraform Init
         run: terraform init
