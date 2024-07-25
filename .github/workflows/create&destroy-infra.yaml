@@ -70,17 +70,22 @@ jobs:
           echo "${{ secrets.AWS_CREDENTIALS }}" > ~/.aws/credentials
           chmod 600 ~/.aws/credentials
 
+      - name: Verify Cluster and Nodegroup
+        run: |
+          aws eks list-clusters --region us-east-1
+          aws eks list-nodegroups --cluster-name cluster-terraform --region us-east-1
+
       - name: Delete Nodegroup
         run: |
-          aws eks delete-nodegroup --cluster-name cluster-terraform --nodegroup-name my-nodegroup-terraform
+          aws eks delete-nodegroup --cluster-name cluster-terraform --nodegroup-name my-nodegroup-terraform --region us-east-1
           sleep 600s
 
       - name: Delete Cluster
         run: |
-          aws eks delete-cluster --name cluster-terraform
+          aws eks delete-cluster --name cluster-terraform --region us-east-1
           sleep 300s
 
       - name: Delete Security Group
         run: |
-          aws ec2 delete-security-group --group-name api-fiap-sg
+          aws ec2 delete-security-group --group-name api-fiap-sg --region us-east-1
           sleep 10s
