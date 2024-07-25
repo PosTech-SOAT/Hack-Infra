@@ -2,7 +2,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-
 resource "aws_security_group" "web-sg" {
   name = "api-fiap-sg"
   ingress {
@@ -46,12 +45,12 @@ resource "aws_eks_node_group" "my_node_group" {
   scaling_config {
     min_size     = 1
     desired_size = 2
-    max_size     = 3
+    max_size     = 15
   }
   disk_size = 20
 
   remote_access {
-    ec2_ssh_key = "cluster-fiap"
+    ec2_ssh_key = "vockey"
   }
 }
 
