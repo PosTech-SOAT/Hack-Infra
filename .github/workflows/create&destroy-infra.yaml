@@ -24,20 +24,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
+      - name: Install AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install --update
+
+      - name: Configure AWS credentials
+        run: |
+          mkdir -p ~/.aws
+          echo "${{ secrets.AWS_CREDENTIALS }}" > ~/.aws/credentials
+          chmod 600 ~/.aws/credentials
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 'latest'
 
-      - name: Configure AWS credentials
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install --update
-          mkdir -p ~/.aws
-          echo "${{ secrets.AWS_CREDENTIALS }}" > ~/.aws/credentials
-          chmod 600 ~/.aws/credentials
-      
       - name: Terraform Init
         run: terraform init
 
@@ -55,28 +58,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 'latest'
-
-      - name: Configure AWS credentials
+      - name: Install AWS CLI
         run: |
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
           sudo ./aws/install --update
+
+      - name: Configure AWS credentials
+        run: |
           mkdir -p ~/.aws
           echo "${{ secrets.AWS_CREDENTIALS }}" > ~/.aws/credentials
           chmod 600 ~/.aws/credentials
-      
-      - name: Terraform Init
-        run: terraform init
 
-      - name: Terraform Refresh
-        run: terraform refresh
+      - name: Delete Nodegroup
+        run: |
+          aws eks delete-nodegroup --cluster-name cluster-terraform --nodegroup-name my-nodegroup-terraform
+          sleep 600s
 
-      - name: Terraform Plan
-        run: terraform plan
+      - name: Delete Cluster
+        run: |
+          aws eks delete-cluster --name cluster-terraform
+          sleep 300s
 
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+      - name: Delete Security Group
+        run: |
+          aws ec2 delete-security-group --group-name api-fiap-sg
+          sleep 10s
