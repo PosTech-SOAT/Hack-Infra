@@ -74,4 +74,3 @@ Após selecionado o workflow em questão, basta apenas selecionar o job destroy 
 
 
 
-
