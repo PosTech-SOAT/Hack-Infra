@@ -5,8 +5,8 @@ provider "aws" {
 resource "aws_security_group" "web-sg" {
   name = "api-fiap-sg"
   ingress {
-    from_port   = 30303
-    to_port     = 30303
+    from_port   = 33333
+    to_port     = 33333
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -25,10 +25,10 @@ data "aws_security_group" "web-sg" {
 
 resource "aws_eks_cluster" "my_cluster" {
   name     = "cluster-terraform"
-  role_arn = "arn:aws:iam::736612247231:role/LabRole"
+  role_arn = "arn:aws:iam::324650179534:role/LabRole"
 
   vpc_config {
-    subnet_ids         = ["subnet-0eb4ce31f92b6d75b", "subnet-040acbea4de0755db"]
+    subnet_ids         = ["subnet-04c2d90343f4198c3", "subnet-0295aa1467e718345"]
     security_group_ids = [data.aws_security_group.web-sg.id]
   }
 }
@@ -38,10 +38,10 @@ resource "aws_eks_node_group" "my_node_group" {
 
   cluster_name    = aws_eks_cluster.my_cluster.name
   node_group_name = "my-nodegroup-terraform"
-  subnet_ids      = ["subnet-0eb4ce31f92b6d75b", "subnet-040acbea4de0755db"]
+  subnet_ids      = ["subnet-04c2d90343f4198c3", "subnet-0295aa1467e718345"]
   instance_types  = ["m6g.large"]
   ami_type        = "AL2_ARM_64"
-  node_role_arn   = "arn:aws:iam::736612247231:role/LabRole"
+  node_role_arn   = "arn:aws:iam::324650179534:role/LabRole"
   scaling_config {
     min_size     = 1
     desired_size = 2
